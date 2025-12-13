@@ -1,0 +1,99 @@
+# CodeRabbit Configuration for Continuous Documentation Generator
+
+# Language & Framework Settings
+language: en
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  
+# What CodeRabbit should focus on
+review_focus:
+  - documentation_quality
+  - markdown_formatting
+  - completeness
+  - accuracy
+  - clarity
+  - consistency
+
+# Documentation-specific rules
+documentation_rules:
+  - Check for broken links
+  - Verify code examples are complete
+  - Ensure API documentation matches code
+  - Validate architecture diagrams
+  - Check for outdated information
+  - Verify all sections are present
+  
+# Auto-review settings
+auto_review:
+  enabled: true
+  drafts: false
+  base_branches:
+    - main
+    - docs-update-*
+    
+# File patterns to review
+path_filters:
+  included:
+    - "docs-site/pages/**/*.md"
+    - "docs-site/pages/**/*.mdx"
+    - "cline-automation/generated-docs/**"
+    - "README.md"
+    - "**/*.md"
+  excluded:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    
+# Review style for documentation
+review_style:
+  documentation:
+    check_spelling: true
+    check_grammar: true
+    check_formatting: true
+    check_links: true
+    suggest_improvements: true
+    
+# Code quality checks
+code_quality:
+  enabled: true
+  checks:
+    - complexity
+    - maintainability
+    - best_practices
+    - security
+    
+# PR descriptions
+pull_request:
+  require_description: true
+  description_template: |
+    ## Documentation Changes
+    
+    ### Summary
+    <!-- Brief overview of changes -->
+    
+    ### Files Modified
+    <!-- List of documentation files changed -->
+    
+    ### Checklist
+    - [ ] All links tested
+    - [ ] Code examples verified
+    - [ ] No sensitive data exposed
+    - [ ] Spelling and grammar checked
+
+# Comments style
+comments:
+  style: concise
+  tone: friendly
+  emoji: true
+  
+# Specific checks for auto-generated docs
+auto_generated_docs:
+  verify_accuracy: true
+  check_completeness: true
+  validate_structure: true
+  suggest_examples: true

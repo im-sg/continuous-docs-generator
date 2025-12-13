@@ -1,0 +1,27 @@
+{
+  "name": "cline-automation",
+  "version": "1.0.0",
+  "description": "Cline CLI automation scripts for documentation generation",
+  "type": "module",
+  "main": "generate-docs.js",
+  "scripts": {
+    "generate-docs": "node generate-docs.js",
+    "scan-repo": "node scan-repo.js",
+    "create-pr": "node create-pr.js",
+    "test": "node test-automation.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.0",
+    "@octokit/rest": "^20.0.2",
+    "dotenv": "^16.3.1",
+    "simple-git": "^3.22.0",
+    "glob": "^10.3.10",
+    "marked": "^11.1.1",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "yargs": "^17.7.2"
+  },
+  "bin": {
+    "cline-docs": "./cli.js"
+  }
+}

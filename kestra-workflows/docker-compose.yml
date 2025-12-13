@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  kestra:
+    image: kestra/kestra:latest
+    container_name: kestra
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          server:
+            basic-auth:
+              enabled: false
+          repository:
+            type: postgres
+          queue:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+      # OpenAI API Key for AI Agent
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      VERCEL_TOKEN: ${VERCEL_TOKEN}
+    volumes:
+      - kestra-data:/app/storage
+      - ./weekly-summary.yml:/app/flows/weekly-summary.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: kestra-postgres
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: kestra
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  kestra-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  default:
+    name: kestra-network

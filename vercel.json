@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "continuous-docs-generator",
+  "builds": [
+    {
+      "src": "docs-site/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "docs-site/$1"
+    }
+  ],
+  "buildCommand": "cd docs-site && npm install && npm run build",
+  "outputDirectory": "docs-site/.next",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://continuous-docs-generator.vercel.app"
+  },
+  "github": {
+    "enabled": true,
+    "autoAlias": true,
+    "silent": false
+  }
+}

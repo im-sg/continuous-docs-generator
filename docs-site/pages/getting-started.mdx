@@ -1,0 +1,188 @@
+# Getting Started
+
+Get your automated documentation system up and running in minutes!
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js 18+** installed
+- **Git** installed
+- A **GitHub account**
+- An **OpenAI API key** (for AI-powered features)
+- **Docker** (optional, for Kestra)
+
+## Installation Steps
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/continuous-docs-generator.git
+cd continuous-docs-generator
+```
+
+### 2. Install Documentation Site
+
+```bash
+cd docs-site
+npm install
+npm run dev
+```
+
+Your documentation site will be available at `http://localhost:3000`
+
+### 3. Set Up Cline Automation
+
+```bash
+cd ../cline-automation
+npm install
+
+# Create environment file
+cat > .env << EOF
+ANTHROPIC_API_KEY=your_anthropic_key_here
+OPENAI_API_KEY=your_openai_key_here
+GITHUB_TOKEN=your_github_token_here
+EOF
+```
+
+### 4. Configure Kestra (Optional)
+
+```bash
+cd ../kestra-workflows
+
+# Create environment file
+cat > .env << EOF
+OPENAI_API_KEY=your_openai_key_here
+GITHUB_TOKEN=your_github_token_here
+VERCEL_TOKEN=your_vercel_token_here
+EOF
+
+# Start Kestra
+docker-compose up -d
+```
+
+Access Kestra UI at `http://localhost:8080`
+
+## Quick Test
+
+Generate documentation for your project:
+
+```bash
+cd cline-automation
+node generate-docs.js /path/to/your/project
+```
+
+This will create:
+- `api.md` - API documentation
+- `changelog.md` - Commit history
+- `architecture.md` - Code structure diagram
+
+## Deploy to Vercel
+
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Deploy:
+```bash
+cd docs-site
+vercel
+```
+
+3. Follow the prompts to link your project
+
+## Enable CodeRabbit
+
+1. Visit [CodeRabbit](https://coderabbit.ai)
+2. Sign in with GitHub
+3. Enable CodeRabbit for your repository
+4. Create a test PR to verify it's working
+
+## Configuration
+
+### Environment Variables
+
+Create `.env` files in each directory with these variables:
+
+**docs-site/.env.local**
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-site.vercel.app
+GITHUB_TOKEN=ghp_xxxxx
+```
+
+**cline-automation/.env**
+```bash
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+OPENAI_API_KEY=sk-xxxxx
+GITHUB_TOKEN=ghp_xxxxx
+REPO_PATH=/path/to/repo
+```
+
+**kestra-workflows/.env**
+```bash
+OPENAI_API_KEY=sk-xxxxx
+GITHUB_TOKEN=ghp_xxxxx
+VERCEL_TOKEN=xxxxx
+```
+
+### Getting API Keys
+
+- **OpenAI**: https://platform.openai.com/api-keys
+- **Anthropic**: https://console.anthropic.com/
+- **GitHub Token**: Settings → Developer settings → Personal access tokens
+- **Vercel Token**: Account Settings → Tokens
+
+## Verify Installation
+
+Run these commands to verify everything works:
+
+```bash
+# Test Cline automation
+cd cline-automation
+npm run generate-docs -- --repo=.
+
+# Test documentation site
+cd ../docs-site
+npm run build
+
+# Test Kestra (if using Docker)
+curl http://localhost:8080/api/v1/flows
+```
+
+## Next Steps
+
+- [Configure your first workflow](/workflows)
+- [Customize documentation templates](/customization)
+- [Set up automated deployments](/deployment)
+- [Learn about AI summarization](/ai-features)
+
+## Troubleshooting
+
+### Port Already in Use
+
+If port 3000 or 8080 is busy:
+
+```bash
+# For docs site
+PORT=3001 npm run dev
+
+# For Kestra
+# Edit docker-compose.yml and change ports
+```
+
+### API Key Errors
+
+Make sure your `.env` files are in the correct directories and have valid keys.
+
+### Git Permissions
+
+Ensure your GitHub token has these permissions:
+- `repo` (full control)
+- `workflow` (update workflows)
+
+## Need Help?
+
+- Check our [FAQ](/faq)
+- Open an [issue on GitHub](https://github.com/YOUR_USERNAME/continuous-docs-generator/issues)
+- Join the discussion on [Discord](https://discord.gg/wemakedevs)
