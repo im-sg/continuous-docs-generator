@@ -1,72 +1,77 @@
-# Continuous Documentation Generator
+# 📚 Continuous Documentation Generator
 
-> Automated documentation generation powered by Cline CLI, Kestra, CodeRabbit, and deployed on Vercel
+> AI-powered automated documentation system using Cline CLI, Kestra AI Agent, CodeRabbit, and Vercel
 
-## 🎯 Overview
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)](https://continuous-docs-generator-etwlo7ax8-saigangadhars-projects.vercel.app)
+[![Powered by OpenAI](https://img.shields.io/badge/Powered%20by-OpenAI-blue)](https://openai.com)
+[![Automated by Cline](https://img.shields.io/badge/Automated%20by-Cline-green)](https://github.com/cline/cline)
 
-This project automates the entire documentation lifecycle:
-- **Cline CLI** scans repositories and auto-generates documentation (API docs, changelogs, architecture diagrams)
-- **Kestra** summarizes code diffs weekly using AI agents
-- **CodeRabbit** reviews generated documentation for quality
-- **Vercel** hosts the live documentation site
+**🚀 Live Demo:** [https://continuous-docs-generator-etwlo7ax8-saigangadhars-projects.vercel.app](https://continuous-docs-generator-etwlo7ax8-saigangadhars-projects.vercel.app)
 
-## 🏆 Hackathon Prize Categories
+## 🎯 What This Does
 
-This project qualifies for:
-- ✅ **Infinity Build Award** ($5,000) - Cline CLI automation
-- ✅ **Wakanda Data Award** ($4,000) - Kestra AI Agent summarization
-- ✅ **Stormbreaker Deployment Award** ($2,000) - Vercel deployment
-- ✅ **Captain Code Award** ($1,000) - CodeRabbit integration
+Never manually update documentation again. This project creates a **complete automated documentation pipeline**:
 
-## 🚀 Quick Start
+1. 🤖 **Cline CLI** analyzes your code and generates comprehensive documentation automatically
+2. 🧠 **Kestra AI Agent** summarizes weekly changes AND makes intelligent decisions about what needs updating
+3. ✅ **CodeRabbit** reviews all documentation for quality and completeness
+4. 🚀 **Vercel** deploys your docs instantly, always keeping them up-to-date
+
+## ⚡ Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- GitHub account
-- OpenAI API key
+- Node.js 18+ ([Download](https://nodejs.org))
+- OpenAI API key ([Get one](https://platform.openai.com/api-keys))
+- GitHub account with personal access token ([Create](https://github.com/settings/tokens))
 
-### Installation
+### 1. Install Dependencies
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/continuous-docs-generator.git
 cd continuous-docs-generator
 
-# Install dependencies for documentation site
+# Install Cline automation
+cd cline-automation && npm install
+
+# Install docs site
+cd ../docs-site && npm install
+```
+
+### 2. Set Up API Keys
+
+```bash
+# Create Cline .env file
+cat > cline-automation/.env << EOF
+OPENAI_API_KEY=your_openai_key_here
+GITHUB_TOKEN=your_github_token_here
+EOF
+
+# Create docs site .env file
+cat > docs-site/.env.local << EOF
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+GITHUB_TOKEN=your_github_token_here
+EOF
+```
+
+### 3. Try It Out!
+
+**Generate documentation:**
+```bash
+cd cline-automation
+node generate-docs.js ../sample-project
+```
+
+**View the docs site:**
+```bash
+cd ../docs-site
+npm run dev
+# Visit http://localhost:3000
+```
+
+**Deploy to Vercel:**
+```bash
 cd docs-site
-npm install
-
-# Install Cline CLI
-cd ../cline-automation
-npm install
-
-# Set up Kestra (Docker)
-cd ../kestra-workflows
-docker-compose up -d
-```
-
-### Environment Variables
-
-Create `.env` files in respective directories:
-
-**docs-site/.env.local**
-```
-NEXT_PUBLIC_SITE_URL=https://your-site.vercel.app
-GITHUB_TOKEN=your_github_token
-```
-
-**cline-automation/.env**
-```
-OPENAI_API_KEY=your_openai_key
-GITHUB_TOKEN=your_github_token
-REPO_PATH=/path/to/your/repo
-```
-
-**kestra-workflows/.env**
-```
-OPENAI_API_KEY=your_openai_key
-GITHUB_TOKEN=your_github_token
+npm install -g vercel
+vercel
 ```
 
 ## 📁 Project Structure
@@ -77,109 +82,176 @@ continuous-docs-generator/
 │   ├── pages/
 │   ├── public/
 │   └── theme.config.jsx
-├── cline-automation/       # Cline CLI scripts
-│   ├── generate-docs.js
-│   ├── scan-repo.js
-│   └── create-pr.js
+├── cline-automation/       # Cline CLI automation scripts
+│   └── generate-docs.js
 ├── kestra-workflows/       # Kestra workflow definitions
-│   ├── weekly-summary.yml
-│   └── docker-compose.yml
+│   └── weekly-summary.yml
 └── README.md
 ```
 
 ## 🔧 How It Works
 
-### 1. Cline CLI Automation
-Cline scans your repository and generates:
-- API documentation from code comments
-- Changelog from commit history
-- Architecture diagrams from code structure
-- Setup guides from configuration files
+### The Complete Automation Pipeline
+
+```mermaid
+graph LR
+    A[Code Changes] --> B[Cline CLI Scans]
+    B --> C[AI Generates Docs]
+    C --> D[GitHub Actions Creates PR]
+    D --> E[CodeRabbit Reviews]
+    E --> F[Kestra AI Agent Analyzes]
+    F --> G{Update Needed?}
+    G -->|Yes| H[Merge & Deploy]
+    G -->|No| I[Skip]
+    H --> J[Vercel Auto-Deploy]
+    J --> K[Live Documentation]
+```
+
+### 1. 🤖 Cline CLI - Automated Doc Generation
+
+**What it does:**
+- Scans your entire repository
+- Uses OpenAI GPT-4 to analyze code
+- Generates API docs, changelogs, architecture diagrams
+- Outputs clean Markdown files
+
+**See it in action:**
+```bash
+cd cline-automation
+node generate-docs.js ../sample-project
+ls ../sample-project/generated-docs/
+# api.md, changelog.md, architecture.md ✨
+```
+
+**Key code:** [generate-docs.js](./cline-automation/generate-docs.js)
+
+### 2. 🧠 Kestra AI Agent - Intelligent Summarization & Decision-Making
+
+**What makes this special:** The AI doesn't just summarize - it **makes decisions**!
+
+**Kestra AI Agent:**
+1. Fetches git diffs from the past week
+2. Summarizes changes in plain English
+3. **Analyzes impact and decides:**
+   - Does API documentation need updating? (YES/NO + reason)
+   - Should architecture diagrams be regenerated? (YES/NO + reason)
+   - Is a rebuild needed? (YES/NO + priority)
+4. Takes action based on decisions (creates PRs, triggers deployments)
+
+**See the workflow:** [weekly-summary.yml](./kestra-workflows/weekly-summary.yml)
+
+### 3. ✅ CodeRabbit - Quality Assurance
+
+**What it does:**
+- Automatically reviews all documentation PRs
+- Checks for clarity and completeness
+- Suggests improvements
+- Ensures consistency with best practices
+
+**Configuration:** [.coderabbit.yaml](./.coderabbit.yaml)
+
+### 4. 🚀 Vercel - Instant Deployment
+
+**What it does:**
+- Deploys documentation site automatically
+- Creates preview URLs for every PR
+- Global CDN for fast access
+- Zero-downtime deployments
+
+**Deploy command:** `vercel`
+
+## 💡 Usage
+
+### Generate Docs for Your Project
 
 ```bash
 cd cline-automation
-npm run generate-docs -- --repo=/path/to/repo
+
+# Generate docs for any repository
+node generate-docs.js /path/to/your/project
+
+# Or use current directory
+node generate-docs.js .
+
+# Specify custom output location
+node generate-docs.js /path/to/project /path/to/output
 ```
 
-### 2. Kestra Weekly Summaries
+### CI/CD Integration
+
+The GitHub Actions workflow automatically:
+1. Runs on every push to `main`
+2. Generates documentation
+3. Creates a PR
+4. Requests CodeRabbit review
+5. Deploys to Vercel on merge
+
+See: [.github/workflows/auto-docs.yml](./.github/workflows/auto-docs.yml)
+
+### Weekly Summaries with Kestra
+
 Kestra runs weekly to:
-- Fetch git diffs from the past week
-- Use AI Agent to summarize changes
-- Generate human-readable update reports
-- Trigger documentation regeneration
+- Summarize the past 7 days of changes
+- Make decisions about documentation needs
+- Create PRs with summaries
+- Trigger rebuilds if needed
 
-### 3. CodeRabbit Review
-Generated documentation is committed via PR:
-- CodeRabbit automatically reviews
-- Suggests improvements for clarity
-- Checks for completeness
-- Ensures consistency
+## ✨ Key Features
 
-### 4. Vercel Deployment
-Documentation site automatically deploys:
-- Live updates on merge
-- Preview deployments for PRs
-- Global CDN distribution
+### For Developers
+- 🔍 **Zero Manual Work** - Documentation updates automatically with code
+- 📝 **AI-Powered Analysis** - GPT-4 understands your code's intent
+- 📊 **Visual Diagrams** - Auto-generated architecture and flow charts
+- 🔄 **Always Current** - Weekly summaries keep docs fresh
 
-## 🎥 Demo Video
+### For Teams
+- 👥 **Automated Reviews** - CodeRabbit checks every documentation update
+- 🎯 **Smart Decisions** - AI determines what needs updating and why
+- 🚀 **Instant Deployment** - Changes go live immediately
+- 📈 **Comprehensive History** - Automatic changelogs from git commits
 
-[Watch 2-minute demo](https://your-demo-link.com)
-
-## 🛠️ Usage Examples
-
-### Generate Documentation for Any Repo
-
-```bash
-# Using Cline CLI
-cline generate-docs \
-  --repo=https://github.com/username/project \
-  --output=./generated-docs \
-  --format=markdown
-
-# View generated docs locally
-cd docs-site
-npm run dev
-```
-
-### Trigger Kestra Workflow Manually
-
-```bash
-curl -X POST http://localhost:8080/api/v1/executions/trigger \
-  -H "Content-Type: application/json" \
-  -d '{
-    "namespace": "continuous-docs",
-    "flowId": "weekly-summary"
-  }'
-```
-
-## 📊 Features
-
-- ✅ **Automatic API Documentation** - Extracts from JSDoc, TypeScript, Python docstrings
-- ✅ **Smart Changelog Generation** - Groups commits by feature/fix/breaking
-- ✅ **Architecture Visualization** - Generates Mermaid diagrams from imports
-- ✅ **Weekly AI Summaries** - Natural language updates of code changes
-- ✅ **PR-Based Review Flow** - All docs reviewed before deployment
-- ✅ **Live Documentation Site** - Always up-to-date, searchable docs
+### Technical Features
+- ✅ **Multi-language Support** - JavaScript, TypeScript, Python, Java, Go, Rust
+- ✅ **Markdown Output** - Compatible with any documentation system
+- ✅ **Mermaid Diagrams** - Render architecture visually
+- ✅ **GitHub Integration** - Automatic PR creation and review
+- ✅ **Vercel Integration** - Seamless deployment pipeline
+- ✅ **Kestra Orchestration** - Complex workflows made simple
 
 ## 🧪 Testing
 
+### Test Cline Automation
+
 ```bash
-# Test Cline automation
 cd cline-automation
-npm test
+node generate-docs.js ../sample-project
 
-# Test Kestra workflows locally
-cd kestra-workflows
-./test-workflow.sh
+# Verify output
+ls ../sample-project/generated-docs/
+cat ../sample-project/generated-docs/api.md
+```
 
-# Test documentation site
+### Test Documentation Site
+
+```bash
 cd docs-site
 npm run build
+npm start
+
+# Or for development
+npm run dev
+```
+
+### Test Vercel Deployment
+
+```bash
+cd docs-site
+vercel --prod
 ```
 
 ## 🤝 Contributing
 
-This is a hackathon project, but contributions are welcome!
+Contributions are welcome!
 
 1. Fork the repository
 2. Create a feature branch
@@ -190,9 +262,13 @@ This is a hackathon project, but contributions are welcome!
 
 MIT License - see LICENSE file for details
 
-## 👥 Team
+## 🎓 Resources
 
-- **Sasi** - Project Lead & Full Stack Development
+- **Cline CLI:** https://github.com/cline/cline
+- **Kestra:** https://kestra.io/docs
+- **CodeRabbit:** https://docs.coderabbit.ai
+- **Vercel:** https://vercel.com/docs
+- **OpenAI API:** https://platform.openai.com/docs
 
 ## 🙏 Acknowledgments
 
@@ -203,8 +279,8 @@ MIT License - see LICENSE file for details
 
 ## 📞 Support
 
-For questions or issues, please open a GitHub issue or contact via the hackathon Discord.
+For questions or issues, please open a GitHub issue.
 
 ---
 
-Built with ❤️ for the WeMakeDevs Hackathon
+Built with AI-powered automation

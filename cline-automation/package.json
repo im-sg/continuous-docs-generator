@@ -11,14 +11,14 @@
     "test": "node test-automation.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.20.0",
     "@octokit/rest": "^20.0.2",
+    "chalk": "^5.3.0",
     "dotenv": "^16.3.1",
-    "simple-git": "^3.22.0",
     "glob": "^10.3.10",
     "marked": "^11.1.1",
-    "chalk": "^5.3.0",
+    "openai": "^4.104.0",
     "ora": "^8.0.1",
+    "simple-git": "^3.22.0",
     "yargs": "^17.7.2"
   },
   "bin": {

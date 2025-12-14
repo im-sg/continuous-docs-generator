@@ -42,6 +42,18 @@ kestra-workflows/logs/
 
 # Generated documentation (tracked separately)
 cline-automation/generated-docs/
+sample-project/generated-docs/
+
+# Hackathon-specific documentation (not needed in git)
+QUICK_DEMO.md
+QUICK_START.md
+DEMO_SCRIPT.md
+HACKATHON_CHECKLIST.md
+SUBMISSION_CHECKLIST.md
+ACTION_PLAN.md
+PROJECT_STRUCTURE.md
+START_HERE.md
+DEPLOYMENT.md
 
 # Python
 __pycache__/

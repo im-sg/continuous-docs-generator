@@ -6,7 +6,7 @@ description: Weekly code diff summarization using Kestra AI Agent
 inputs:
   - id: repo_url
     type: STRING
-    defaults: https://github.com/YOUR_USERNAME/continuous-docs-generator
+    defaults: https://github.com/im-sg/continuous-docs-generator
 
   - id: openai_api_key
     type: SECRET
@@ -162,7 +162,7 @@ tasks:
             "name": "continuous-docs-generator",
             "gitSource": {
               "type": "github",
-              "repo": "YOUR_USERNAME/continuous-docs-generator",
+              "repo": "im-sg/continuous-docs-generator",
               "ref": "main"
             }
           }

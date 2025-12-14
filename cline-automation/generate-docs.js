@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { Octokit } from '@octokit/rest';
 import simpleGit from 'simple-git';
 import { glob } from 'glob';
@@ -19,13 +19,13 @@ const __dirname = path.dirname(__filename);
 class ClineDocGenerator {
   constructor(repoPath, outputPath) {
     this.repoPath = repoPath;
-    this.outputPath = outputPath || path.join(repoPath, 'docs');
+    this.outputPath = outputPath || path.join(repoPath, 'generated-docs');
     this.git = simpleGit(repoPath);
-    
-    this.anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY
+
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
     });
-    
+
     this.octokit = new Octokit({
       auth: process.env.GITHUB_TOKEN
     });
@@ -98,9 +98,9 @@ class ClineDocGenerator {
       const filePath = path.join(this.repoPath, file);
       const content = await fs.readFile(filePath, 'utf-8');
 
-      // Use Claude to analyze and document
-      const response = await this.anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
+      // Use OpenAI to analyze and document
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
         max_tokens: 2000,
         messages: [{
           role: 'user',
@@ -119,7 +119,7 @@ Return only the Markdown documentation, no preamble.`
         }]
       });
 
-      const docText = response.content[0].text;
+      const docText = response.choices[0].message.content;
       apiDocs += `\n## ${file}\n\n${docText}\n\n---\n\n`;
     }
 

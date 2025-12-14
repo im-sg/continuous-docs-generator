@@ -1,9 +1,9 @@
 export default {
   logo: <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>📚 Continuous Docs</span>,
   project: {
-    link: 'https://github.com/YOUR_USERNAME/continuous-docs-generator'
+    link: 'https://github.com/im-sg/continuous-docs-generator'
   },
-  docsRepositoryBase: 'https://github.com/YOUR_USERNAME/continuous-docs-generator/tree/main/docs-site',
+  docsRepositoryBase: 'https://github.com/im-sg/continuous-docs-generator/tree/main/docs-site',
   useNextSeoProps() {
     return {
       titleTemplate: '%s – Continuous Documentation Generator'
@@ -21,7 +21,7 @@ export default {
     text: (
       <span>
         MIT {new Date().getFullYear()} ©{' '}
-        <a href="https://github.com/YOUR_USERNAME" target="_blank">
+        <a href="https://github.com/im-sg" target="_blank">
           Continuous Docs Generator
         </a>
       </span>
