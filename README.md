@@ -275,12 +275,4 @@ MIT License - see LICENSE file for details
 - Cline CLI for autonomous coding capabilities
 - Kestra for workflow orchestration
 - CodeRabbit for AI-powered code reviews
-- Vercel for seamless deployment
-
-## 📞 Support
-
-For questions or issues, please open a GitHub issue.
-
----
-
-Built with AI-powered automation
+- Vercel for seamless deployment   
