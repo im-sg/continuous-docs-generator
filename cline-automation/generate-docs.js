@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import ora from 'ora';
+import os from 'os';
 
 dotenv.config();
 
@@ -17,9 +18,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class ClineDocGenerator {
-  constructor(repoPath, outputPath) {
+  constructor(repoPath, outputPath, isTemporary = false) {
     this.repoPath = repoPath;
     this.outputPath = outputPath || path.join(repoPath, 'generated-docs');
+    this.isTemporary = isTemporary;
     this.git = simpleGit(repoPath);
 
     this.openai = new OpenAI({
@@ -29,6 +31,18 @@ class ClineDocGenerator {
     this.octokit = new Octokit({
       auth: process.env.GITHUB_TOKEN
     });
+  }
+
+  async cleanup() {
+    if (this.isTemporary) {
+      const spinner = ora('Cleaning up temporary files...').start();
+      try {
+        await fs.rm(this.repoPath, { recursive: true, force: true });
+        spinner.succeed('Temporary files cleaned up');
+      } catch (error) {
+        spinner.warn('Failed to clean up temporary files');
+      }
+    }
   }
 
   async scanRepository() {
@@ -269,13 +283,75 @@ Return only the Markdown documentation, no preamble.`
   }
 }
 
+// Helper function to check if string is a GitHub URL
+function isGitHubUrl(str) {
+  return str && (str.startsWith('https://github.com/') || str.startsWith('git@github.com:'));
+}
+
+// Helper function to clone GitHub repository
+async function cloneGitHubRepo(repoUrl) {
+  const spinner = ora('Cloning GitHub repository...').start();
+
+  try {
+    // Create temporary directory
+    const tempDir = path.join(os.tmpdir(), `cline-docs-${Date.now()}`);
+    await fs.mkdir(tempDir, { recursive: true });
+
+    // Clone the repository
+    const git = simpleGit();
+    await git.clone(repoUrl, tempDir, ['--depth', '1']);
+
+    spinner.succeed(`Repository cloned to ${tempDir}`);
+    return tempDir;
+  } catch (error) {
+    spinner.fail('Failed to clone repository');
+    throw error;
+  }
+}
+
 // CLI usage
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const repoPath = process.argv[2] || process.cwd();
-  const outputPath = process.argv[3];
+  (async () => {
+    try {
+      const input = process.argv[2] || process.cwd();
+      const outputPath = process.argv[3];
 
-  const generator = new ClineDocGenerator(repoPath, outputPath);
-  generator.generateAllDocs().catch(console.error);
+      let repoPath;
+      let isTemporary = false;
+      let generator;
+
+      // Check if input is a GitHub URL
+      if (isGitHubUrl(input)) {
+        console.log(chalk.blue.bold('\n🔗 GitHub URL detected\n'));
+
+        // Clone the repository
+        repoPath = await cloneGitHubRepo(input);
+        isTemporary = true;
+
+        // If output path is not specified, use current directory
+        const finalOutputPath = outputPath || path.join(process.cwd(), 'generated-docs');
+
+        generator = new ClineDocGenerator(repoPath, finalOutputPath, isTemporary);
+      } else {
+        // Use local directory
+        repoPath = input;
+        generator = new ClineDocGenerator(repoPath, outputPath, false);
+      }
+
+      // Generate documentation
+      const result = await generator.generateAllDocs();
+
+      // If we cloned a temporary repo, copy the generated docs and clean up
+      if (isTemporary) {
+        console.log(chalk.green(`\n✅ Documentation saved to: ${result.outputPath}\n`));
+        await generator.cleanup();
+      }
+
+    } catch (error) {
+      console.error(chalk.red('\n❌ Error:'), error.message);
+      process.exit(1);
+    }
+  })();
 }
 
 export default ClineDocGenerator;
